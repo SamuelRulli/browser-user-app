@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import json
 import time
 import requests
@@ -10,7 +9,7 @@ import os
 from .config import Config
 
 app = Flask(__name__)
-CORS(app)
+# CORS será gerenciado pelo Nginx
 
 
 class BrowserUseAPI:
