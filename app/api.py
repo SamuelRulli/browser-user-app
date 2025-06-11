@@ -6,85 +6,89 @@ import requests
 from typing import Dict, Any, Optional, List
 import os
 
+# Importar configurações
+from .config import Config
+
 app = Flask(__name__)
 CORS(app)
-
-# Configurações da API Browser Use
-API_KEY = os.getenv('BROWSER_USE_API_KEY', 'bu_qmQQk3-mrRbXvhq9kNurpAxQXvwF0meWyU6e8GvAxu0')
-BASE_URL = 'https://api.browser-use.com/api/v1'
-HEADERS = {'Authorization': f'Bearer {API_KEY}'}
 
 
 class BrowserUseAPI:
     """Cliente para interagir com a API Browser Use"""
     
     def __init__(self, api_key: str = None):
-        self.api_key = api_key or API_KEY
+        self.api_key = api_key or Config.BROWSER_USE_API_KEY
         self.headers = {'Authorization': f'Bearer {self.api_key}'}
     
     def run_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         """Executa uma nova task"""
-        response = requests.post(f'{BASE_URL}/run-task', headers=self.headers, json=task_data)
+        response = requests.post(f'{Config.BROWSER_USE_BASE_URL}/run-task', headers=self.headers, json=task_data)
         response.raise_for_status()
         return response.json()
     
     def get_task(self, task_id: str) -> Dict[str, Any]:
         """Obtém detalhes completos da task"""
-        response = requests.get(f'{BASE_URL}/task/{task_id}', headers=self.headers)
+        response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
     def get_task_status(self, task_id: str) -> Dict[str, Any]:
         """Obtém apenas o status da task"""
-        response = requests.get(f'{BASE_URL}/task/{task_id}/status', headers=self.headers)
+        response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/status', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
     def stop_task(self, task_id: str) -> Dict[str, Any]:
         """Para uma task em execução"""
-        response = requests.put(f'{BASE_URL}/task/{task_id}/stop', headers=self.headers)
+        response = requests.put(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/stop', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
     def pause_task(self, task_id: str) -> Dict[str, Any]:
         """Pausa uma task em execução"""
-        response = requests.put(f'{BASE_URL}/task/{task_id}/pause', headers=self.headers)
+        response = requests.put(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/pause', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
     def resume_task(self, task_id: str) -> Dict[str, Any]:
         """Resume uma task pausada"""
-        response = requests.put(f'{BASE_URL}/task/{task_id}/resume', headers=self.headers)
+        response = requests.put(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/resume', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
     def list_tasks(self, limit: int = 10, offset: int = 0) -> Dict[str, Any]:
         """Lista todas as tasks"""
         params = {'limit': limit, 'offset': offset}
-        response = requests.get(f'{BASE_URL}/tasks', headers=self.headers, params=params)
+        response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/tasks', headers=self.headers, params=params)
         response.raise_for_status()
         return response.json()
     
     def get_task_media(self, task_id: str) -> Dict[str, Any]:
         """Obtém mídia da task"""
-        response = requests.get(f'{BASE_URL}/task/{task_id}/media', headers=self.headers)
+        response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/media', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
     def get_task_screenshots(self, task_id: str) -> Dict[str, Any]:
         """Obtém screenshots da task"""
-        response = requests.get(f'{BASE_URL}/task/{task_id}/screenshots', headers=self.headers)
+        response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/screenshots', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
     def get_task_gif(self, task_id: str) -> Dict[str, Any]:
         """Obtém GIF da task"""
-        response = requests.get(f'{BASE_URL}/task/{task_id}/gif', headers=self.headers)
+        response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/gif', headers=self.headers)
         response.raise_for_status()
         return response.json()
     
-    def wait_for_completion(self, task_id: str, poll_interval: int = 2, timeout: int = 300) -> Dict[str, Any]:
+    def wait_for_completion(self, task_id: str, poll_interval: int = None, timeout: int = None) -> Dict[str, Any]:
         """Aguarda a conclusão da task com timeout"""
+        # Usar valores padrão da configuração se não fornecidos
+        if poll_interval is None:
+            poll_interval = Config.DEFAULT_POLL_INTERVAL
+        if timeout is None:
+            timeout = Config.DEFAULT_TIMEOUT
+            
         start_time = time.time()
         while True:
             if time.time() - start_time > timeout:
@@ -143,7 +147,7 @@ def run_task():
         
         # Extrai parâmetros específicos da nossa API
         wait_for_completion = data.pop('wait_for_completion', False)
-        timeout = data.pop('timeout', 300)
+        timeout = data.pop('timeout', Config.DEFAULT_TIMEOUT)
         
         # Executa a task
         result = browser_api.run_task(data)
@@ -293,8 +297,8 @@ def get_task_gif(task_id: str):
 def wait_for_task_completion(task_id: str):
     """Aguarda a conclusão de uma task específica"""
     try:
-        timeout = request.args.get('timeout', 300, type=int)
-        poll_interval = request.args.get('poll_interval', 2, type=int)
+        timeout = request.args.get('timeout', Config.DEFAULT_TIMEOUT, type=int)
+        poll_interval = request.args.get('poll_interval', Config.DEFAULT_POLL_INTERVAL, type=int)
         
         result = browser_api.wait_for_completion(task_id, poll_interval=poll_interval, timeout=timeout)
         return jsonify({
@@ -331,6 +335,4 @@ def internal_error(error):
 
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 9000))
-    debug = os.getenv('DEBUG', 'False').lower() == 'true'
-    app.run(host='0.0.0.0', port=port, debug=debug)
+    app.run(host='0.0.0.0', port=Config.PORT, debug=Config.DEBUG)

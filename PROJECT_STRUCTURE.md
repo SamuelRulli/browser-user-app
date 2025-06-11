@@ -100,7 +100,7 @@ python run_server.py
 ### 2. Docker Básico
 ```bash
 # Configurar .env
-cp .env.example .env
+cp .env .env
 
 # Deploy
 ./deploy.sh basic

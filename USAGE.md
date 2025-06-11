@@ -16,8 +16,8 @@ pip install -r requirements.txt
 # Configure sua API key do Browser Use
 export BROWSER_USE_API_KEY="sua_api_key_aqui"
 
-# Ou crie um arquivo .env baseado no .env.example
-cp .env.example .env
+# Ou crie um arquivo .env baseado no .env
+cp .env .env
 # Edite o arquivo .env com sua API key
 ```
 

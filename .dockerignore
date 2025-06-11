@@ -14,7 +14,7 @@ docker-compose.yml
 
 # Environment files
 .env
-.env.example
+.env
 
 # Python
 __pycache__/

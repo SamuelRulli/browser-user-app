@@ -1,33 +1,39 @@
 import json
 import time
+import os
 
 import requests
 
-API_KEY = 'bu_qmQQk3-mrRbXvhq9kNurpAxQXvwF0meWyU6e8GvAxu0'
-BASE_URL = 'https://api.browser-use.com/api/v1'
-HEADERS = {'Authorization': f'Bearer {API_KEY}'}
+# Importar configurações
+from .config import Config
+
+HEADERS = Config.get_headers()
 
 
 def create_task(instructions: str):
 	"""Create a new browser automation task"""
-	response = requests.post(f'{BASE_URL}/run-task', headers=HEADERS, json={'task': instructions})
+	response = requests.post(f'{Config.BROWSER_USE_BASE_URL}/run-task', headers=HEADERS, json={'task': instructions})
 	return response.json()['id']
 
 
 def get_task_status(task_id: str):
 	"""Get current task status"""
-	response = requests.get(f'{BASE_URL}/task/{task_id}/status', headers=HEADERS)
+	response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}/status', headers=HEADERS)
 	return response.json()
 
 
 def get_task_details(task_id: str):
 	"""Get full task details including output"""
-	response = requests.get(f'{BASE_URL}/task/{task_id}', headers=HEADERS)
+	response = requests.get(f'{Config.BROWSER_USE_BASE_URL}/task/{task_id}', headers=HEADERS)
 	return response.json()
 
 
-def wait_for_completion(task_id: str, poll_interval: int = 2):
+def wait_for_completion(task_id: str, poll_interval: int = None):
 	"""Poll task status until completion"""
+	# Usar valor padrão da configuração se não fornecido
+	if poll_interval is None:
+		poll_interval = Config.DEFAULT_POLL_INTERVAL
+		
 	count = 0
 	unique_steps = []
 	while True:

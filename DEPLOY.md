@@ -31,7 +31,7 @@ cd browser-user-app
 ### 2. Configurar Variáveis de Ambiente
 ```bash
 # Copiar arquivo de exemplo
-cp .env.example .env
+cp .env .env
 
 # Editar configurações
 nano .env

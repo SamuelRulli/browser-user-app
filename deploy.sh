@@ -43,8 +43,8 @@ check_docker() {
 check_env() {
     if [ ! -f .env ]; then
         warn "Arquivo .env não encontrado. Criando a partir do .env.example..."
-        if [ -f .env.example ]; then
-            cp .env.example .env
+        if [ -f .env ]; then
+            cp .env .env
             warn "Edite o arquivo .env com suas configurações antes de continuar!"
             warn "Especialmente a BROWSER_USE_API_KEY"
             read -p "Pressione Enter para continuar após editar o .env..."
