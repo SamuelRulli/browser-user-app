@@ -1,0 +1,272 @@
+{
+  "info": {
+    "name": "Browser Use API",
+    "description": "Coleção de endpoints para testar a API Browser Use Wrapper",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Run Task - Assíncrona",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"task\": \"Vá para https://httpbin.org/get e copie o conteúdo da resposta JSON\",\n  \"wait_for_completion\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/run-task",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "run-task"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Run Task - Síncrona",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"task\": \"Abra https://www.google.com, pesquise por 'Python Flask' e me diga quantos resultados foram encontrados\",\n  \"wait_for_completion\": true,\n  \"timeout\": 120\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/run-task",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "run-task"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Run Task - Output Estruturado",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"task\": \"Vá para https://news.ycombinator.com e extraia os títulos das 5 primeiras notícias\",\n  \"structured_output_json\": \"{\\\"titles\\\": [\\\"string\\\"]}\",\n  \"wait_for_completion\": true,\n  \"timeout\": 180\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/run-task",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "run-task"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Run Task - Completa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"task\": \"Abra https://www.google.com e pesquise por 'OpenAI'\",\n  \"wait_for_completion\": false,\n  \"timeout\": 300,\n  \"llm_model\": \"gpt-4o\",\n  \"use_adblock\": true,\n  \"use_proxy\": true,\n  \"proxy_country_code\": \"us\",\n  \"highlight_elements\": true,\n  \"save_browser_data\": false,\n  \"secrets\": {},\n  \"allowed_domains\": [\"google.com\"],\n  \"structured_output_json\": null,\n  \"included_file_names\": []\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/run-task",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "run-task"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Task Details",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Task Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/status",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "status"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Wait for Task Completion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/wait?timeout=300&poll_interval=2",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "wait"],
+          "query": [
+            {
+              "key": "timeout",
+              "value": "300"
+            },
+            {
+              "key": "poll_interval",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Stop Task",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/stop",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "stop"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Pause Task",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/pause",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "pause"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Resume Task",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/resume",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "resume"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/tasks?limit=10&offset=0",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "tasks"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "offset",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Task Media",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/media",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "media"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Task Screenshots",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/screenshots",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "screenshots"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Task GIF",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task/{{task_id}}/gif",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task", "{{task_id}}", "gif"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "task_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
